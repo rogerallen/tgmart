@@ -6,6 +6,7 @@
   (:require [tweegeemee.core :as tgm]))
 
 ;; working towards http://zine.electricobjects.com/artist-program
+;;
 ;; Still Images
 ;;
 ;; 1080px x 1920 pixels
@@ -27,24 +28,21 @@
 ;; have unsightly gaps.
 
 ;; some snippets based on mikea's code.  modified from telegenic so I
-;; could use ffmpeg.
-(def DEFAULT-OPTIONS
-  {:filename "art/a%03d.png"
-   :width (* (/ 1080 10) 3)
-   :height (* (/ 1920 10) 3)})
-
+;; could use ffmpeg.  also modified to allow for parallel runs on different
+;; systems
 (defmacro render-animation
-  "Macro to render a sequence of frames, looping with a symbolic frame counter."
-  ([[key frame-count] src]
-    `(render-animation [~key ~frame-count] ~src))
-  ([[key frame-count] src options]
+  "Macro to render a sequence of frames, looping with a symbolic frame counter.
+   Example: (render-animation [i 10] (offset [(* i 10) 0.0 0.0] (vnoise)))"
+  ([[key frame-end] src options]
+   `(render-animation [~key 0 ~frame-end 1] ~src))
+  ([[key frame-start frame-end] src options]
+   `(render-animation [~key ~frame-start ~frame-end 1] ~src))
+  ([[key frame-start frame-end frame-step] src options]
     (when-not (symbol? key) (error "render-animation needs a symbol binding for the frame number"))
-    (when-not (integer? frame-count) (error "render-animation needs an integer number of frames"))
-    `(let [mopts# (merge DEFAULT-OPTIONS ~options)
-           opts#  (mapcat identity mopts#)]
-       (doseq [~key (range ~frame-count)]    ;; loop over all frames, lazily (doseq for mem?)
+    `(let [opts#  (mapcat identity options#)]
+       (doseq [~key (range ~frame-start ~frame-end ~frame-step)] ;; loop over all frames, lazily. don't hold memory
          (let [im# (apply image ~src opts#)  ;; create the frame
-               fn# (format (:filename mopts#) ~key)]
+               fn# (format (:filename options#) ~key)]
            (apply show im# opts#)            ;; show the latest frame
            (ImageIO/write im# "png" (File. fn#))))))) ;; write the frame
 
@@ -58,6 +56,8 @@
 ;;   -c:v libx264 -preset slow -crf 22 \
 ;;   a.mp4
 
+;; rescale the data to frame it appropriately
+;; NOTE: https://github.com/mikera/clisk/issues/15
 (defn scale-for-vert-hd0
   "center at 0,0.  x ranges [-9/16,9/16], y [-1,1]"
   [fn]
@@ -71,36 +71,44 @@
   (->> fn
        (scale  [(/ 16 9) (/ 16 9)])))
 
+;; easing-like functions.  use on the key to create a scalar per frame
+(def circle-cos [i max-range steps]
+  (* max-range (Math/cos (* 2 Math/PI (/ i steps)))))
+(def circle-sin [i max-range steps]
+  (* max-range (Math/sin (* 2 Math/PI (/ i steps)))))
+(def half-circle-cos [i max-range steps]
+  (* max-range (Math/cos (* Math/PI (/ i steps)))))
+(def half-circle-sin [i max-range steps]
+  (* max-range (Math/sin (* Math/PI (/ i steps)))))
+
 ;; ======================================================================
 ;; Animation creation code
 (comment
 
   ;; ======================================================================
-  ;; pastel-dream
+  ;; opus1a - pastel dream
   ;; SAVE THIS -- really nice loop.
   (render-animation
    [i 3390] ;; 113 seconds
-   (offset
-    [0.0 0.0 0.0]     ;; use an offset in x-axis to scroll the image over time
-    (scale-for-vert-hd
-     (vpow
-      (length plasma)
-      (sigmoid
-       (gradient
+   (scale-for-vert-hd
+    (vpow
+     (length plasma)
+     (sigmoid
+      (gradient
+       (green-from-hsl
         (green-from-hsl
-         (green-from-hsl
-          (rgb-from-hsl
-           (v+ (offset [(* (Math/cos (* 2 Math/PI (/ i 3390))) 0.15)
-                        0.0
-                        (* (Math/sin (* 2 Math/PI (/ i 3390))) 0.15)]
-                       pos)
-               (blue-from-hsl [0.6035 -2.8447 0.9631]))))))))))
-   {:filename "art/pastel_dream/a%04d.png"
-    :width    (* (/ 1080 10) 3)
-    :height   (* (/ 1920 10) 3)})
+         (rgb-from-hsl
+          (v+ (offset [(circle-cos i 0.15 3390)
+                       0.0
+                       (circle-sin i 0.15 3390)]
+                      pos)
+              (blue-from-hsl [0.6035 -2.8447 0.9631]))))))))))
+  {:filename "art/opus1a/a%04d.png"
+   :width    (* (/ 1080 10) 3)
+   :height   (* (/ 1920 10) 3)})
 
   ;; ======================================================================
-  ;; fun noise fn1
+  ;; fun noise opus1b
   ;; this is pretty good but not my favorite -- took 5.5 hours for 480 frames on MacBook Pro
   (render-animation
    [i 480]
@@ -133,13 +141,17 @@
        )
       )
      )
-   {:filename "art/fn1/a%04d.png"
+   {:filename "art/opus1b/a%04d.png"
     :width    (* (/ 1080 10) 3)
     :height   (* (/ 1920 10) 3)
     })
 
   ;; ======================================================================
-  ;; fun noise fn2 -- 30s/frame. [ ] Go with 1000 frames over night
+  ;; opus1c - orange fun noise
+  ;; 30s/frame.
+  ;; [ ] Go with 1000 frames over night (got 870)
+  ;; I like the circular movement, but the noise has to stay still or change MUCH less.
+  ;; maybe try no cross3 offset?
   (render-animation
    [i 1000]
     (scale-for-vert-hd
@@ -174,37 +186,31 @@
        )
       )
      )
-   {:filename "art/fn2/a%04d.png"
+   {:filename "art/opus1c/a%04d.png"
     :width    (* (/ 1080 10) 3)
     :height   (* (/ 1920 10) 3)
     })
 
   ;; ======================================================================
-  ;; fn3 :name "151130_023115_N.clj"
+  ;; opus1d based on "151130_023115_N.clj"
   ;; in process...
   (render-animation
-   [i 10]
-    (scale-for-vert-hd
+   [i 300]
+    (scale-for-vert-hd0
      (adjust-hsl
-      (offset
-        [(* (Math/sin (* 2 Math/PI (/ i 10))) 0.1)
-         (* (Math/cos (* 2 Math/PI (/ i 10))) 0.1)
-         (* (Math/sin (* 2 Math/PI (/ i 10))) 0.1)]
-        (adjust-hue
-         (x (gradient (x (gradient (gradient spots)))))
-         (max-component (hsl-from-rgb [0.795 2.244 -0.63])))
-        )
-      (gradient
-       (offset
-        [(* (Math/sin (* 2 Math/PI (/ i 10))) 0.04)
-         (* (Math/cos (* 2 Math/PI (/ i 10))) 0.02)
-         0.0]
-        (gradient spots)
-        )
+      (rotate
+       (* 2 Math/PI (/ i -300))
+      (adjust-hue
+       (x (gradient (x (gradient (gradient spots)))))
+       (max-component (hsl-from-rgb [0.795 2.244 -0.63])))
+      )
+      (rotate
+       (* 2 Math/PI (/ i 300))
+       (gradient (gradient spots))
        )
       )
      )
-   {:filename "art/fn3/a%04d.png"
+   {:filename "art/opus1d/a%04d.png"
     :width    (* (/ 1080 10) 3)
     :height   (* (/ 1920 10) 3)
     })
