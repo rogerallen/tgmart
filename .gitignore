@@ -5,6 +5,7 @@
 /art/*.png
 /art/*.list
 /art/*.mp4
+/art/ffmpeg2pass*
 pom.xml
 pom.xml.asc
 *.jar
