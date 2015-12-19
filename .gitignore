@@ -1,7 +1,10 @@
 /target
 /classes
 /checkouts
-/art
+/art/opus*
+/art/*.png
+/art/*.list
+/art/*.mp4
 pom.xml
 pom.xml.asc
 *.jar

@@ -1,0 +1,7 @@
+#!/bin/sh
+printf "file '%s'\nduration 0.0333333333333333\n" ./a*.png > a.list
+ffmpeg \
+  -f concat -i a.list \
+  -pix_fmt yuv420p -an \
+  -c:v libx264 -preset slow -crf 22 \
+  a.mp4
