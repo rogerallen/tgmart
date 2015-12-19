@@ -1,0 +1,14 @@
+#!/bin/sh
+# Two pass method to compress to a specific birate or filesize.
+# 2min16s=136s.  9.5MB goal. *8192/136 = 572 kb/s bitrate
+printf "file '%s'\nduration 0.0333333333333333\n" ./a*.png > a.list
+ffmpeg \
+  -y -f concat -i a.list \
+  -pix_fmt yuv420p -an \
+  -c:v libx264 -preset veryslow -b:v 572k -pass 1 \
+  -f mp4 /dev/null && \
+ffmpeg \
+  -f concat -i a.list \
+  -pix_fmt yuv420p -an \
+  -c:v libx264 -preset veryslow -b:v 572k -pass 2 \
+  a_2pass.mp4
