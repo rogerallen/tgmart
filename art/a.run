@@ -1,0 +1,7 @@
+#!/bin/sh
+printf "file '%s'\n" ./a*.png > a.list
+ffmpeg \
+  -f concat -i a.list \
+  -r 30 \
+  -c:v libx264 -preset slow -crf 22 \
+  a.mp4
