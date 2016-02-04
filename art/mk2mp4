@@ -1,14 +1,23 @@
 #!/bin/sh
 # Two pass method to compress to a specific birate or filesize.
 # 2min16s=136s.  9.5MB goal. *8192/136 = 572 kb/s bitrate
+#
+# Youtube recommends:
+# Mbps | 720p  | 1080p |
+# -----+-------+-------+
+# 30Hz |   5   |   8   |
+# 60Hz |  7.5  |  12   |
+#
 printf "file '%s'\nduration 0.0333333333333333\n" ./a*.png > a.list
 ffmpeg \
   -y -f concat -i a.list \
   -pix_fmt yuv420p -an \
-  -c:v libx264 -preset veryslow -b:v 572k -pass 1 \
+  -c:v libx264 -preset veryslow -b:v 5000k -pass 1 \
+  -r 30 \
   -f mp4 /dev/null && \
 ffmpeg \
   -f concat -i a.list \
   -pix_fmt yuv420p -an \
-  -c:v libx264 -preset veryslow -b:v 572k -pass 2 \
+  -c:v libx264 -preset veryslow -b:v 5000k -pass 2 \
+  -r 30 \
   a_2pass.mp4

@@ -4,4 +4,5 @@ ffmpeg \
   -f concat -i a.list \
   -pix_fmt yuv420p -an \
   -c:v libx264 -preset slow -crf 22 \
+  -r 30 \
   a.mp4
