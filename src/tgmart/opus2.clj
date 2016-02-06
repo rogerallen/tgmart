@@ -61,4 +61,41 @@
    :width 720 :height 720
    )
 
+  ;; opus2c
+  ;; https://twitter.com/tweegeemee/status/695932961036832769/photo/1
+  ;; :name "160206_113143_M.clj" :parents ["160203_163143_C.clj"]
+  (render-animation
+   [i 0 20 1]
+   (->>
+    (vfrac (green-from-hsl (lerp (vconcat (gradient (offset [2.1641 -1.8963 1.3623 1.1235] (vcos (vpow (clamp -2.1979 [2.8877 -0.1482 -0.9508] [2.2707 -2.5016]) (v- pos 2.6432))))) (saturation-from-rgb (rgb-from-hsl [1.4505 -0.0455 2.0777]))) (v- (adjust-hue (vconcat (lightness-from-rgb (length pos)) 2.433) 2.0835) (adjust-hsl (alpha (t (sigmoid 1.7052))) (v- pos 2.6432))) (vabs (vround (vfrac (sigmoid (v* turbulence (lerp pos 2.0475 pos)))))))))
+    (scale [(+ 3.0 (circle-sin i 1 20)) (+ 3.0 (circle-sin i 1 20))])
+    (offset [(circle-sin i 0.5 (/ 20 2)) (circle-cos i 0.5 20)])
+    )
+   {:filename "art/opus2c/a%04d.png"
+    :width   (* (/ 1920 10) 2)
+    :height  (* (/ 1080 10) 2)
+    })
+
+  ;; just the image (centered at the origin)
+  (show
+   (->>
+    (vfrac (green-from-hsl (lerp (vconcat (gradient (offset [2.1641 -1.8963 1.3623 1.1235] (vcos (vpow (clamp -2.1979 [2.8877 -0.1482 -0.9508] [2.2707 -2.5016]) (v- pos 2.6432))))) (saturation-from-rgb (rgb-from-hsl [1.4505 -0.0455 2.0777]))) (v- (normalize (adjust-hue (vdivide (lightness-from-rgb (length pos)) 2.433) 2.0835)) (adjust-hsl (alpha (t (sigmoid 1.7052))) (v- pos 2.6432))) (vabs (vround (vfrac (sigmoid (v* turbulence (lerp pos 2.0475 pos)))))))))
+    (scale [1.0 1.0])
+    ;;(offset [-0.5 -0.5])
+    )
+   :width 320 :height 320
+   )
+
+  ;; opus2? -- this one is pretty expensive to calculate...
+  ;; :name "160131_203257_N.clj" :parents ["160127_173218_N.clj"]
+  (show
+   (->>
+    (adjust-hsl (vcos (blue-from-hsl (dot pos (vsin (rgb-from-hsl (adjust-hue [1.009 0.4101 -0.8179] (vmin [0.502 2.7223 -1.2887] (dot pos pos)))))))) (x (min-component (normalize (square (vsin (rgb-from-hsl (adjust-hue (green-from-hsl [1.009 0.4101 -0.8179]) (v- [0.502 2.7223 -1.2887] pos)))))))))
+    (scale [1.0 1.0])
+    ;;(offset [-0.5 -0.5])
+    )
+   :width 320 :height 320
+   )
+
+
 )
