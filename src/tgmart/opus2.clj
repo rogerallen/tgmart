@@ -65,11 +65,11 @@
   ;; https://twitter.com/tweegeemee/status/695932961036832769/photo/1
   ;; :name "160206_113143_M.clj" :parents ["160203_163143_C.clj"]
   (render-animation
-   [i 0 20 1]
+   [i 0 3200 1]
    (->>
     (vfrac (green-from-hsl (lerp (vconcat (gradient (offset [2.1641 -1.8963 1.3623 1.1235] (vcos (vpow (clamp -2.1979 [2.8877 -0.1482 -0.9508] [2.2707 -2.5016]) (v- pos 2.6432))))) (saturation-from-rgb (rgb-from-hsl [1.4505 -0.0455 2.0777]))) (v- (adjust-hue (vconcat (lightness-from-rgb (length pos)) 2.433) 2.0835) (adjust-hsl (alpha (t (sigmoid 1.7052))) (v- pos 2.6432))) (vabs (vround (vfrac (sigmoid (v* turbulence (lerp pos 2.0475 pos)))))))))
-    (scale [(+ 3.0 (circle-sin i 1 20)) (+ 3.0 (circle-sin i 1 20))])
-    (offset [(circle-sin i 0.5 (/ 20 2)) (circle-cos i 0.5 20)])
+    (scale [(+ 3.0 (circle-sin i 1 3200)) (+ 3.0 (circle-sin i 1 3200))])
+    (offset [(circle-sin i 0.5 (/ 3200 2)) (circle-cos i 0.5 3200)])
     )
    {:filename "art/opus2c/a%04d.png"
     :width   (* (/ 1920 10) 2)
