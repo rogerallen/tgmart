@@ -22,9 +22,9 @@
                (vfrac
                 (adjust-hsl
                  (offset
-                  [(* (Math/sin (* 2 Math/PI (/ i 400))) 0.03)
-                   (* (Math/cos (* 2 Math/PI (/ i 400))) 0.03)
-                   (* (Math/sin (* 2 Math/PI (/ i 400))) 0.03)]
+                  [(* (Math/sin (* 2 Math/PI (/ i 400))) 0.3)
+                   (* (Math/cos (* 2 Math/PI (/ i 400))) 0.3)
+                   (* (Math/sin (* 2 Math/PI (/ i 400))) 0.3)]
                   noise
                   )
                  (sigmoid

@@ -37,7 +37,7 @@
   ;; opus1a - pastel dream
   ;; SAVE THIS -- really nice loop.
   (render-animation
-   [i 0 1 1]
+   [i 0 3390 1]
    ;;[i 0 3390 1] ;; 3390/30Hz=113 seconds
    (scale-for-vert-hd
     (vpow

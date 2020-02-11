@@ -8,5 +8,5 @@
                  [environ             "1.0.0"]
                  [net.mikera/clisk    "0.11.0"]
                  [tentacles           "0.3.0"]
-                 [tweegeemee          "1.3.4"] ;; use localrepo
-                 ])
+                 [tweegeemee          "1.3.5"] ;; use localrepo
+                 [clj-time            "0.11.0"]])
