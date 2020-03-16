@@ -1,10 +1,6 @@
 (ns tgmart.opus3
   (:use [tgmart core]
-        [clisk live])
-  (:import [clisk Util]
-           [java.io File]
-           [javax.imageio ImageIO])
-  (:require [tweegeemee.core :as tgm]))
+        [clisk live]))
 
 ;; { :name "171207_063205_b.clj" :parents [] :hash 217353943 :image-hash -2000825249
 ;;   :code (clisk.live/min-component (clisk.live/vfrac (clisk.live/gradient clisk.live/spots)))

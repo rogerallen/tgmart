@@ -1,9 +1,7 @@
 (ns tgmart.core
   (:use [clisk live])
-  (:import [clisk Util]
-           [java.io File]
-           [javax.imageio ImageIO])
-  (:require [tweegeemee.core :as tgm]))
+  (:import [java.io File]
+           [javax.imageio ImageIO]))
 
 ;; a snippet based on mikea's code.  modified from telegenic so I
 ;; could use ffmpeg.  Also modified to allow for parallel runs on
@@ -65,4 +63,5 @@
     :height   (* 2 (/ 1920 10))
     })
 
+  (show (vnoise))
 )

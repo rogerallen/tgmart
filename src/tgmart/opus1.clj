@@ -1,10 +1,6 @@
 (ns tgmart.opus1
   (:use [tgmart core]
-        [clisk live])
-  (:import [clisk Util]
-           [java.io File]
-           [javax.imageio ImageIO])
-  (:require [tweegeemee.core :as tgm]))
+        [clisk live]))
 
 ;; working towards http://zine.electricobjects.com/artist-program
 ;;
