@@ -9,7 +9,8 @@
 # 60Hz |  7.5  |  12   |
 #
 #PATH=~/Documents/Devel/ffmpeg/bin:$PATH
-printf "file '%s'\nduration 0.0333333333333333\n" a*.png > a.list
+REV=$1
+printf "file '%s'\nduration 0.0333333333333333\n" a-${REV}-*.png > a.list
 ffmpeg \
   -y -f concat -i a.list \
   -pix_fmt yuv420p -an \
@@ -21,4 +22,4 @@ ffmpeg \
   -pix_fmt yuv420p -an \
   -c:v libx264 -preset veryslow -b:v 5000k -pass 2 \
   -r 30 \
-  a_2pass.mp4
+  a${REV}_2pass.mp4
