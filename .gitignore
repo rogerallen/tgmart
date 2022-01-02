@@ -6,6 +6,7 @@
 /art/*.list
 /art/*.mp4
 /art/ffmpeg2pass*
+/art/top10_2021
 pom.xml
 pom.xml.asc
 *.jar
@@ -13,3 +14,5 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 .calva/
+.clj-kondo/
+.lsp/
