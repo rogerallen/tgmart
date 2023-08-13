@@ -7,6 +7,9 @@
 /art/*.mp4
 /art/ffmpeg2pass*
 /art/top10_2021
+/art/screens/*png
+/art/screens/*jpg
+/art/screens/fonts
 pom.xml
 pom.xml.asc
 *.jar

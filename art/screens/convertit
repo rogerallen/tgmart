@@ -1,0 +1,24 @@
+#!/bin/bash
+PNG=$1
+JPG=$2
+BASE="${JPG:0:15}"
+
+case "$JPG" in
+*"171207_063205_b"*) FILL="-fill #dd7700" ;; # -stroke #774400" ;;
+*"230615_013316_D"*) FILL="-fill #333333" ;;
+*)                   FILL="-fill #ffffff" ;;
+esac
+
+case "$JPG" in 
+*"1920x1080"*) POINTSIZE="-pointsize 16"; OFFSET="+44+64" ;;
+*"2560x1440"*) POINTSIZE="-pointsize 20"; OFFSET="+56+88" ;;
+*"2560x1600"*) POINTSIZE="-pointsize 22"; OFFSET="+64+96" ;;
+*"3200x2000"*) POINTSIZE="-pointsize 26"; OFFSET="+80+120" ;;
+*"3840x2160"*) POINTSIZE="-pointsize 28"; OFFSET="+86+130" ;;
+*) POINTSIZE="-pointsize 26"; OFFSET="+80+120" ;;
+esac
+	
+convert \
+  -font Helvetica-BoldOblique ${POINTSIZE} ${FILL} \
+  -annotate ${OFFSET} "tweegeemee.com/i/${BASE}" -gravity SouthEast \
+  $PNG $JPG
