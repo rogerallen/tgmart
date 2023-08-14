@@ -14,7 +14,12 @@
    ;; 1 - https://tweegeemee.com/i/171207_063205_b/code
    {:name "171207_063205_b"
     :seed 171106 ; from gist
-    :code `(min-component (vfrac (gradient spots)))}])
+    :code `(min-component (vfrac (gradient spots)))}
+   ;; 2 - https://tweegeemee.com/i/150821_143150_M/code 
+   {:name "150821_143150_M"
+    :seed 150821 ;; actually this is "pre-seed"
+    :code `(vpow (length plasma) (sigmoid (gradient (green-from-hsl (green-from-hsl (rgb-from-hsl (v+ pos (blue-from-hsl [0.6035 -2.8447 0.9631])))))))) }
+   ])
 
 (def screen-resolutions
   [{:W 3200 :H 2000} ;; 0 i9
@@ -25,20 +30,39 @@
    {:W 320 :H 200}   ;; 5 test
    ])
 
-(let [n  1 ;; image index
-      rn 4 ;; resolution index
-      seed (:seed (nth screen-codes n))
-      name (:name (nth screen-codes n))
-      code-n (:code (nth screen-codes n))
-      code `(->>
-             ~code-n
-             (clisk.live/scale [1.0 1.0])
-             (clisk.live/offset [0.0 0.0]))
-      _ (clisk.live/seed-perlin-noise! seed)
-      _ (clisk.live/seed-simplex-noise! seed)
-      W (:W (nth screen-resolutions rn))
-      H (:H (nth screen-resolutions rn))
-      img (clisk.live/image (eval code) :width W :height H)]
-  (ImageIO/write
-   img "png"
-   (File. (format "art/screens/%s_%dx%d.png" name W H))))
+(def screen-offsets
+  [
+   [0.0 0.0]
+   [0.0 0.0]
+   [-0.2 0.0]
+  ])
+
+(defn gen
+  "generate png file
+   n = image index
+   rn =  resolution index"
+  [n rn]
+  (let [seed (:seed (nth screen-codes n))
+        name (:name (nth screen-codes n))
+        offset_ (nth screen-offsets n)
+        code-n (:code (nth screen-codes n))
+        code `(->>
+               ~code-n
+               (clisk.live/scale [1.0 1.0])
+               (clisk.live/offset ~offset_))
+        _ (clisk.live/seed-perlin-noise! seed)
+        _ (clisk.live/seed-simplex-noise! seed)
+        W (:W (nth screen-resolutions rn))
+        H (:H (nth screen-resolutions rn))
+        img (clisk.live/image (eval code) :width W :height H)
+        img-filename (format "art/screens/%s_%dx%d.png" name W H) ]
+    (ImageIO/write
+     img "png"
+     (File. img-filename))
+    (println img-filename)))
+
+;; ------ run this stuff -----
+
+(gen 2 4)
+
+(doseq [rn (range 5)] (gen 2 rn))
