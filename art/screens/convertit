@@ -7,6 +7,8 @@ case "$JPG" in
 *"171207_063205_b"*) FILL="-fill #dd7700" ;; # -stroke #774400" ;;
 *"230615_013316_D"*) FILL="-fill #333333" ;;
 *"150821_143150_M"*) FILL="-fill #333333" ;;
+*"150821_143150_M"*) FILL="-fill #333333" ;;
+*"170102_233120_N"*) FILL="-fill #0afdc7 -stroke #333333" ;;
 *)                   FILL="-fill #ffffff" ;;
 esac
 
